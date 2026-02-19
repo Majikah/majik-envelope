@@ -1,0 +1,65 @@
+{
+  "name": "@majikah/majik-envelope",
+  "type": "module",
+  "description": "A seed phrase account library for creating, managing, and parsing mnemonic-based cryptographic accounts (Majik Keys). Generate deterministic key pairs from BIP39 seed phrases with simple, developer-friendly APIs.",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "author": "Zelijah",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Majikah/majik-key.git"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/jedlsf"
+  },
+  "keywords": [
+    "seed-phrase",
+    "mnemonic",
+    "bip39",
+    "crypto",
+    "cryptography",
+    "account",
+    "key-generation",
+    "deterministic",
+    "seed",
+    "keypair",
+    "majik-key",
+    "blockchain",
+    "authentication",
+    "security",
+    "ed25519",
+    "key-derivation"
+  ],
+  "homepage": "https://github.com/Majikah/majik-key#readme",
+  "bugs": {
+    "url": "https://github.com/Majikah/majik-key/issues"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@bokuweb/zstd-wasm": "^0.0.27",
+    "@noble/post-quantum": "^0.5.4",
+    "@scure/bip39": "^1.6.0",
+    "@stablelib/aes": "^2.0.1",
+    "@stablelib/ed25519": "^2.0.2",
+    "@stablelib/gcm": "^2.0.1",
+    "@stablelib/pbkdf2": "^2.0.1",
+    "@stablelib/sha256": "^2.0.1",
+    "@stablelib/x25519": "^2.0.1",
+    "ed2curve": "^0.3.0",
+    "fflate": "^0.8.2"
+  },
+  "devDependencies": {
+    "@types/ed2curve": "^0.2.4"
+  }
+}
