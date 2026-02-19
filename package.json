@@ -1,7 +1,7 @@
 {
   "name": "@majikah/majik-envelope",
   "type": "module",
-  "description": "A seed phrase account library for creating, managing, and parsing mnemonic-based cryptographic accounts (Majik Keys). Generate deterministic key pairs from BIP39 seed phrases with simple, developer-friendly APIs.",
+  "description": "The post-quantum cryptographic engine for Majik Message. Implements Envelope Format using ML-KEM-768 (Kyber) and AES-256-GCM with multi-recipient support and transparent compression.",
   "version": "0.0.1",
   "license": "Apache-2.0",
   "author": "Zelijah",
@@ -13,7 +13,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Majikah/majik-key.git"
+    "url": "git+https://github.com/Majikah/majik-envelope.git"
   },
   "funding": {
     "type": "github",
@@ -30,16 +30,16 @@
     "deterministic",
     "seed",
     "keypair",
-    "majik-key",
+    "majik-envelope",
     "blockchain",
     "authentication",
     "security",
     "ed25519",
     "key-derivation"
   ],
-  "homepage": "https://github.com/Majikah/majik-key#readme",
+  "homepage": "https://github.com/Majikah/majik-envelope#readme",
   "bugs": {
-    "url": "https://github.com/Majikah/majik-key/issues"
+    "url": "https://github.com/Majikah/majik-envelope/issues"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

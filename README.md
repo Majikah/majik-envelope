@@ -1,78 +1,33 @@
-# Majik Key
+# Majik Envelope
 
 [![Developed by Zelijah](https://img.shields.io/badge/Developed%20by-Zelijah-red?logo=github&logoColor=white)](https://thezelijah.world) ![GitHub Sponsors](https://img.shields.io/github/sponsors/jedlsf?style=plastic&label=Sponsors&link=https%3A%2F%2Fgithub.com%2Fsponsors%2Fjedlsf)
 
-**Majik Key** is a seed phrase account library for creating, managing, and parsing mnemonic-based cryptographic accounts (Majik Keys). Generate deterministic key pairs from BIP39 seed phrases with simple, developer-friendly APIs.
+**Majik Envelope** is the core cryptographic engine of the [Majik Message](https://github.com/Majikah/majik-message) platform. It provides a post-quantum secure "envelope" format that handles message encryption, multi-recipient key encapsulation, and transparent compression using NIST-standardized algorithms.
 
-![npm](https://img.shields.io/npm/v/@majikah/majik-key) ![npm downloads](https://img.shields.io/npm/dm/@majikah/majik-key) ![npm bundle size](https://img.shields.io/bundlephobia/min/%40majikah%2Fmajik-key) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)
-
+![npm](https://img.shields.io/npm/v/@majikah/majik-envelope) ![npm downloads](https://img.shields.io/npm/dm/@majikah/majik-envelope) ![npm bundle size](https://img.shields.io/bundlephobia/min/%40majikah%2Fmajik-envelope) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)
 
 
 ---
-- [Majik Key](#majik-key)
+- [Majik Envelope](#majik-envelope)
   - [Overview](#overview)
-    - [What is a Majik Key?](#what-is-a-majik-key)
-    - [Use Cases](#use-cases)
-  - [Features](#features)
-    - [Security First](#security-first)
-    - [BIP39 Compliance](#bip39-compliance)
-    - [Developer Friendly](#developer-friendly)
-    - [Import/Export](#importexport)
-    - [Interoperability](#interoperability)
+    - [Key Features](#key-features)
   - [Installation](#installation)
-  - [Quick Start](#quick-start)
-  - [API Reference](#api-reference)
-    - [Static Methods](#static-methods)
-      - [`MajikKey.create(mnemonic, passphrase, label?)`](#majikkeycreatemnemonic-passphrase-label)
-      - [`MajikKey.fromJSON(json)`](#majikkeyfromjsonjson)
-      - [`MajikKey.fromMnemonicJSON(mnemonicJson, passphrase, label?)`](#majikkeyfrommnemonicjsonmnemonicjson-passphrase-label)
-      - [`MajikKey.importFromMnemonicBackup(backup, mnemonic, passphrase, label?)`](#majikkeyimportfrommnemonicbackupbackup-mnemonic-passphrase-label)
-      - [`MajikKey.generateMnemonic(strength?)`](#majikkeygeneratemnemonicstrength)
-      - [`MajikKey.validateMnemonic(mnemonic)`](#majikkeyvalidatemnemonicmnemonic)
-    - [Instance Methods](#instance-methods)
-      - [`unlock(passphrase)`](#unlockpassphrase)
-      - [`lock()`](#lock)
-      - [`verify(passphrase)`](#verifypassphrase)
-      - [`updateLabel(newLabel)`](#updatelabelnewlabel)
-      - [`updatePassphrase(currentPassphrase, newPassphrase)`](#updatepassphrasecurrentpassphrase-newpassphrase)
-      - [`getPrivateKey()`](#getprivatekey)
-      - [`getPrivateKeyBase64()`](#getprivatekeybase64)
-      - [`toJSON()`](#tojson)
-      - [`toString(pretty?)`](#tostringpretty)
-      - [`toMnemonicJSON(mnemonic, passphrase?)`](#tomnemonicjsonmnemonic-passphrase)
-      - [`exportMnemonicBackup(mnemonic)`](#exportmnemonicbackupmnemonic)
-      - [`toContact()`](#tocontact)
-      - [`toMajikMessageIdentity(user, options?)`](#tomajikmessageidentityuser-options)
-    - [Getters](#getters)
-      - [`id: string`](#id-string)
-      - [`fingerprint: string`](#fingerprint-string)
-      - [`publicKey: CryptoKey | { raw: Uint8Array }`](#publickey-cryptokey---raw-uint8array-)
-      - [`publicKeyBase64: string`](#publickeybase64-string)
-      - [`label: string`](#label-string)
-      - [`backup: string`](#backup-string)
-      - [`timestamp: Date`](#timestamp-date)
-      - [`isLocked: boolean`](#islocked-boolean)
-      - [`isUnlocked: boolean`](#isunlocked-boolean)
-      - [`metadata: MajikKeyMetadata`](#metadata-majikkeymetadata)
-  - [Usage Examples](#usage-examples)
-    - [Example 1: Create and Manage a Key](#example-1-create-and-manage-a-key)
-    - [Example 2: Lock/Unlock Pattern](#example-2-lockunlock-pattern)
-    - [Example 3: Backup and Recovery](#example-3-backup-and-recovery)
-    - [Example 4: Update Passphrase](#example-4-update-passphrase)
-    - [Example 5: Verify Passphrase](#example-5-verify-passphrase)
-  - [Integration with Majik Message](#integration-with-majik-message)
-    - [Importing to Majik Message](#importing-to-majik-message)
-    - [Converting to Majik Message Identity](#converting-to-majik-message-identity)
-  - [Security Considerations](#security-considerations)
-    - [Best Practices](#best-practices)
-    - [Security Features](#security-features)
-    - [What NOT to Do](#what-not-to-do)
-    - [What TO Do](#what-to-do)
-    - [Tips \& Reminders](#tips--reminders)
-      - [For Developers](#for-developers)
-      - [For Users](#for-users)
+  - [Usage Guide](#usage-guide)
+    - [Encrypting a Message (Single Recipient)](#encrypting-a-message-single-recipient)
+    - [Encrypting for a Group (2+ Recipients)](#encrypting-for-a-group-2-recipients)
+    - [Decrypting an Envelope](#decrypting-an-envelope)
+  - [Technical Specifications Reference](#technical-specifications-reference)
+    - [1. Cryptographic Stack (Envelope)](#1-cryptographic-stack-envelope)
+    - [2. Binary Structure \& Framing](#2-binary-structure--framing)
+      - [Internal Binary Layout (Decoded Base64):](#internal-binary-layout-decoded-base64)
+    - [3. Primitive Parameters](#3-primitive-parameters)
+    - [4. Encryption Logic Flows](#4-encryption-logic-flows)
+      - [A. Single-Recipient (Direct)](#a-single-recipient-direct)
+      - [B. Multi-Recipient (Group)](#b-multi-recipient-group)
+    - [5. Implementation Notes](#5-implementation-notes)
   - [Related Projects](#related-projects)
     - [Majik Message](#majik-message)
+    - [Majik Key](#majik-key)
   - [Contributing](#contributing)
   - [License](#license)
   - [Author](#author)
@@ -84,780 +39,169 @@
 
 ## Overview
 
-**Majik Key** is a comprehensive library for managing seed phrase-based cryptographic accounts. It provides a secure, intuitive way to create, store, and manage mnemonic-based identities with built-in encryption, backup, and recovery features.
-
-### What is a Majik Key?
-
-A Majik Key is a seed phrase account that:
-- Derives cryptographic key pairs from BIP39 mnemonic phrases
-- Encrypts private keys at rest with a user-defined passphrase
-- Supports secure backup and recovery via mnemonic encryption
-- Provides locked/unlocked state management for enhanced security
-- Is fully compatible with **Majik Message** and other Majikah products
-
-### Use Cases
-
-- **Majik Message Integration**: Create seed phrase accounts that can be imported directly into Majik Message
-- **Cryptographic Identity Management**: Manage multiple identities with deterministic key derivation
-- **Secure Messaging**: Generate signing keys for end-to-end encrypted communication
-- **Blockchain Applications**: Create wallet-like accounts from mnemonic phrases
-- **Majikah Ecosystem**: Use across all Majikah products and services
+Majik Envelope implements **Envelope Format**, which exclusively uses **ML-KEM-768 (FIPS-203)** for post-quantum security. It abstracts away the complexity of managing shared secrets, AES-GCM initialization vectors, and multi-recipient key wrapping, allowing developers to focus on sending secure messages.
 
 ---
 
-## Features
+### Key Features
 
-### Security First
-- **Encrypted at Rest**: Private keys are encrypted with PBKDF2-derived keys (200,000 iterations)
-- **AES-GCM Encryption**: Industry-standard authenticated encryption
-- **Locked/Unlocked States**: Private keys only exist in memory when explicitly unlocked
-- **Per-Identity Salts**: Each account uses a unique salt for encryption
-
-### BIP39 Compliance
-- **Standard Mnemonic Generation**: Generate 12 or 24-word seed phrases
-- **Mnemonic Validation**: Built-in BIP39 validation
-- **Deterministic Key Derivation**: Same mnemonic always produces the same keys
-
-### Developer Friendly
-- **TypeScript Support**: Full type definitions included
-- **Simple API**: Intuitive CRUD operations
-- **Error Handling**: Comprehensive error messages with `MajikKeyError`
-- **Method Chaining**: Fluent API for common operations
-
-### Import/Export
-- **JSON Serialization**: Safe storage format (no private keys exposed)
-- **Mnemonic Backup**: Export/import encrypted backups using mnemonic phrases
-- **MnemonicJSON Format**: Compatible format for seed phrase storage
-
-### Interoperability
-- **Majik Message Compatible**: Seamlessly import/export to Majik Message
-- **Majik Contact Integration**: Convert keys to contact format
-- **Majikah Ecosystem**: Works across all Majikah products
+- **Post-Quantum Security**: Exclusively uses ML-KEM-768 for key encapsulation.
+- **Hybrid Encryption**: Combines ML-KEM shared secrets with AES-256-GCM for high-speed content encryption.
+- **Group Messaging**: Native support for 1-to-many encryption using a single-ciphertext, multi-key-wrap approach.
+- **Transparent Compression**: Built-in Zstd and Gzip support via `MajikCompressor` to reduce message size.
+- **Strict Format**: Binary-backed envelopes with a standardized Base64 string representation (`~*$MJKMSG:`).
 
 ---
+
 
 ## Installation
 
 ```bash
-# Using npm
-npm install @majikah/majik-key
+npm install @majikah/majik-envelope
 
 ```
 
 ---
 
-## Quick Start
+## Usage Guide
+
+### Encrypting a Message (Single Recipient)
+
+The library automatically chooses between "Single" and "Group" logic based on the number of recipients.
 
 ```ts
-import { MajikKey } from '@majikah/majik-key';
+import { MajikEnvelope } from "@majikah/majik-envelope";
 
-// Generate a new mnemonic
-const mnemonic = MajikKey.generateMnemonic(); // 12 words
-console.log('Save this mnemonic:', mnemonic);
+const envelope = await MajikEnvelope.encrypt({
+  plaintext: "Hello, this is a quantum-safe secret.",
+  recipients: [{
+    fingerprint: "recipient_fingerprint_base64",
+    mlKemPublicKey: recipientPublicKeyBytes // Uint8Array (1184 bytes)
+  }],
+  compress: true // Default is true
+});
 
-// Create a new Majik Key (unlocked state)
-const key = await MajikKey.create(
-  mnemonic,
-  'my-secure-passphrase',
-  'My First Key'
-);
+// Convert to the scanner-ready string
+const secretString = envelope.toString(); 
+// Output: ~*$MJKMSG:AbC123...
 
-console.log('Key ID:', key.id);
-console.log('Fingerprint:', key.fingerprint);
-console.log('Is Unlocked:', key.isUnlocked); // true
-
-// Lock the key (clear private keys from memory)
-key.lock();
-console.log('Is Locked:', key.isLocked); // true
-
-// Unlock when needed
-await key.unlock('my-secure-passphrase');
-console.log('Is Unlocked:', key.isUnlocked); // true
-
-// Access private key (only when unlocked)
-const privateKey = key.getPrivateKey();
-const privateKeyBase64 = key.getPrivateKeyBase64();
-
-// Save to storage (private keys never included)
-const json = key.toJSON();
-localStorage.setItem('myKey', JSON.stringify(json));
-
-// Load from storage (locked state)
-const loadedKey = MajikKey.fromJSON(json);
-await loadedKey.unlock('my-secure-passphrase');
-```
-
----
-
-## API Reference
-
-### Static Methods
-
-#### `MajikKey.create(mnemonic, passphrase, label?)`
-Create a new Majik Key from a mnemonic phrase.
-
-**Parameters:**
-- `mnemonic: string` - BIP39 mnemonic phrase (12-24 words)
-- `passphrase: string` - Passphrase to encrypt the private key at rest
-- `label?: string` - Optional label for the key
-
-**Returns:** `Promise<MajikKey>` - A new unlocked MajikKey instance
-
-**Example:**
-```ts
-const mnemonic = 'witch collapse practice feed shame open despair creek road again ice least';
-const key = await MajikKey.create(mnemonic, 'my-password', 'Personal Account');
 
 ```
 
----
+### Encrypting for a Group (2+ Recipients)
 
-#### `MajikKey.fromJSON(json)`
-Load a Majik Key from JSON (locked state).
+For group messages, a senderFingerprint is required for metadata.
 
-**Parameters:**
-- `json: MajikKeyJSON | string` - JSON object or string
-
-**Returns:** `MajikKey` - A locked MajikKey instance
-
-**Example:**
 ```ts
-const json = localStorage.getItem('myKey');
-const key = MajikKey.fromJSON(json);
-await key.unlock('my-password');
+import { MajikEnvelope } from "@majikah/majik-envelope";
+
+const groupEnvelope = await MajikEnvelope.encrypt({
+  plaintext: "Secret group meeting at midnight.",
+  senderFingerprint: "my_fingerprint_base64",
+  recipients: [
+    { fingerprint: "alice_fp", mlKemPublicKey: alicePk },
+    { fingerprint: "bob_fp", mlKemPublicKey: bobPk }
+  ]
+});
+
+// Convert to the scanner-ready string
+const secretString = groupEnvelope.toString(); 
+// Output: ~*$MJKMSG:AbC123...
+
+
 ```
 
----
 
-#### `MajikKey.fromMnemonicJSON(mnemonicJson, passphrase, label?)`
-Create a Majik Key from MnemonicJSON format.
+### Decrypting an Envelope
 
-**Parameters:**
-- `mnemonicJson: MnemonicJSON | string` - MnemonicJSON object or string
-- `passphrase: string` - Passphrase to encrypt the key at rest
-- `label?: string` - Optional label for the key
+To decrypt, you simply provide the recipient's identity (their private ML-KEM key and fingerprint).
 
-**Returns:** `Promise<MajikKey>` - A new unlocked MajikKey instance
-
-**Example:**
 ```ts
-const mnemonicData = {
-  id: 'backup-id',
-  seed: ['word1', 'word2', ...],
-  phrase: 'optional-encryption-phrase'
+import { MajikEnvelope } from "@majikah/majik-envelope";
+
+const identity = {
+  fingerprint: "my_fingerprint_base64",
+  mlKemSecretKey: mySecretKeyBytes // Uint8Array (2400 bytes)
 };
 
-const key = await MajikKey.fromMnemonicJSON(mnemonicData, 'my-password');
-```
-
----
-
-#### `MajikKey.importFromMnemonicBackup(backup, mnemonic, passphrase, label?)`
-Import a Majik Key from a mnemonic-encrypted backup.
-
-**Parameters:**
-- `backup: string` - Base64-encoded backup string
-- `mnemonic: string` - The mnemonic phrase used to encrypt the backup
-- `passphrase: string` - Passphrase to encrypt the imported key
-- `label?: string` - Optional label for the key
-
-**Returns:** `Promise<MajikKey>` - A new unlocked MajikKey instance
-
-**Example:**
-```ts
-const backupString = 'eT8xY2F...'; // From exportMnemonicBackup()
-const key = await MajikKey.importFromMnemonicBackup(
-  backupString,
-  mnemonic,
-  'new-password',
-  'Restored Account'
-);
-```
-
----
-
-#### `MajikKey.generateMnemonic(strength?)`
-Generate a new BIP39 mnemonic phrase.
-
-**Parameters:**
-- `strength?: 128 | 256` - Entropy strength (128 = 12 words, 256 = 24 words). Default: 128
-
-**Returns:** `string` - A new mnemonic phrase
-
-**Example:**
-```ts
-const mnemonic12 = MajikKey.generateMnemonic();      // 12 words
-const mnemonic24 = MajikKey.generateMnemonic(256);   // 24 words
-```
-
----
-
-#### `MajikKey.validateMnemonic(mnemonic)`
-Validate a BIP39 mnemonic phrase.
-
-**Parameters:**
-- `mnemonic: string` - Mnemonic phrase to validate
-
-**Returns:** `boolean` - true if valid, false otherwise
-
-**Example:**
-```ts
-const isValid = MajikKey.validateMnemonic('witch collapse practice...');
-```
-
----
-
-### Instance Methods
-
-#### `unlock(passphrase)`
-Unlock the Majik Key by decrypting the private key.
-
-**Parameters:**
-- `passphrase: string` - Passphrase to decrypt the private key
-
-**Returns:** `Promise<this>` - This instance for chaining
-
-**Throws:** `MajikKeyError` if passphrase is incorrect or key is already unlocked
-
-**Example:**
-```ts
-await key.unlock('my-password');
-```
-
----
-
-#### `lock()`
-Lock the Majik Key by clearing private keys from memory.
-
-**Returns:** `this` - This instance for chaining
-
-**Example:**
-```ts
-key.lock();
-```
-
----
-
-#### `verify(passphrase)`
-Verify that a passphrase can decrypt the private key.
-
-**Parameters:**
-- `passphrase: string` - Passphrase to verify
-
-**Returns:** `Promise<boolean>` - true if valid, false otherwise
-
-**Example:**
-```ts
-const isValid = await key.verify('my-password');
-```
-
----
-
-#### `updateLabel(newLabel)`
-Update the label of the Majik Key.
-
-**Parameters:**
-- `newLabel: string` - New label value
-
-**Returns:** `this` - This instance for chaining
-
-**Example:**
-```ts
-key.updateLabel('Work Account');
-```
-
----
-
-#### `updatePassphrase(currentPassphrase, newPassphrase)`
-Change the passphrase used to encrypt the private key.
-
-**Parameters:**
-- `currentPassphrase: string` - Current passphrase
-- `newPassphrase: string` - New passphrase
-
-**Returns:** `Promise<this>` - This instance for chaining
-
-**Throws:** `MajikKeyError` if current passphrase is incorrect
-
-**Example:**
-```ts
-await key.updatePassphrase('old-password', 'new-password');
-```
-
----
-
-#### `getPrivateKey()`
-Get the private key (only when unlocked).
-
-**Returns:** `CryptoKey | { raw: Uint8Array }` - The private key
-
-**Throws:** `MajikKeyError` if the key is locked
-
-**Example:**
-```ts
-const privateKey = key.getPrivateKey();
-```
-
----
-
-#### `getPrivateKeyBase64()`
-Get the private key as base64 (only when unlocked).
-
-**Returns:** `string` - The private key in base64 format
-
-**Throws:** `MajikKeyError` if the key is locked
-
-**Example:**
-```ts
-const privateKeyBase64 = key.getPrivateKeyBase64();
-```
-
----
-
-#### `toJSON()`
-Export to JSON format (safe for storage).
-
-**Returns:** `MajikKeyJSON` - JSON representation (private keys never included)
-
-**Example:**
-```ts
-const json = key.toJSON();
-localStorage.setItem('myKey', JSON.stringify(json));
-```
-
----
-
-#### `toString(pretty?)`
-Export to JSON string.
-
-**Parameters:**
-- `pretty?: boolean` - Whether to pretty-print. Default: false
-
-**Returns:** `string` - JSON string representation
-
-**Example:**
-```ts
-const jsonString = key.toString(true);
-```
-
----
-
-#### `toMnemonicJSON(mnemonic, passphrase?)`
-Export to MnemonicJSON format.
-
-**Parameters:**
-- `mnemonic: string` - The BIP39 mnemonic phrase
-- `passphrase?: string` - Optional passphrase
-
-**Returns:** `MnemonicJSON` - MnemonicJSON object
-
-**Throws:** `MajikKeyError` if the key is locked
-
-**Example:**
-```ts
-const mnemonicData = key.toMnemonicJSON(mnemonic, 'encryption-phrase');
-```
-
----
-
-#### `exportMnemonicBackup(mnemonic)`
-Export a mnemonic-encrypted backup.
-
-**Parameters:**
-- `mnemonic: string` - The original mnemonic phrase
-
-**Returns:** `Promise<string>` - Base64-encoded backup string
-
-**Throws:** `MajikKeyError` if the key is locked
-
-**Example:**
-```ts
-const backup = await key.exportMnemonicBackup(mnemonic);
-```
-
----
-
-#### `toContact()`
-Create a MajikContact from this Majik Key.
-
-**Returns:** `MajikContact` - A MajikContact instance
-
-**Example:**
-```ts
-const contact = key.toContact();
-```
-
----
-
-#### `toMajikMessageIdentity(user, options?)`
-Convert to MajikMessageIdentity for use in Majik Message.
-
-**Parameters:**
-- `user: MajikUser` - MajikUser instance
-- `options?: { label?: string, restricted?: boolean }` - Optional configuration
-
-**Returns:** `Promise<MajikMessageIdentity>` - MajikMessageIdentity instance
-
-**Example:**
-```ts
-const identity = await key.toMajikMessageIdentity(user, {
-  label: 'My Account',
-  restricted: false
-});
-```
-
----
-
-### Getters
-
-#### `id: string`
-The unique identifier (fingerprint).
-
-#### `fingerprint: string`
-The cryptographic fingerprint.
-
-#### `publicKey: CryptoKey | { raw: Uint8Array }`
-The public key.
-
-#### `publicKeyBase64: string`
-The public key in base64 format.
-
-#### `label: string`
-The user-defined label.
-
-#### `backup: string`
-The mnemonic backup identifier.
-
-#### `timestamp: Date`
-The creation timestamp.
-
-#### `isLocked: boolean`
-Whether the key is currently locked.
-
-#### `isUnlocked: boolean`
-Whether the key is currently unlocked.
-
-#### `metadata: MajikKeyMetadata`
-Safe metadata object (no sensitive data).
-
-**Example:**
-```ts
-console.log(key.metadata);
-// {
-//   id: 'fingerprint-id',
-//   fingerprint: 'fingerprint-id',
-//   label: 'My Key',
-//   timestamp: Date,
-//   isLocked: false
-// }
-```
-
----
-
-## Usage Examples
-
-### Example 1: Create and Manage a Key
-
-```ts
-import { MajikKey } from '@majikah/majik-key';
-
-async function createKey() {
-  // Generate mnemonic
-  const mnemonic = MajikKey.generateMnemonic();
-  console.log('🔑 Save this mnemonic safely:', mnemonic);
-
-  // Create key
-  const key = await MajikKey.create(
-    mnemonic,
-    'secure-passphrase',
-    'Personal Account'
-  );
-
-  console.log('✅ Key created!');
-  console.log('ID:', key.id);
-  console.log('Fingerprint:', key.fingerprint);
-  console.log('Label:', key.label);
-
-  // Save to storage
-  const json = key.toJSON();
-  localStorage.setItem('myKey', JSON.stringify(json));
-
-  return { key, mnemonic };
+try {
+  // Option 1: Decrypt from an existing instance
+  const decrypted = await envelope.decrypt(identity);
+  
+  // Option 2: Parse from a string first
+  const parsedEnvelope = MajikEnvelope.fromString("~*$MJKMSG:...");
+  const text = await parsedEnvelope.decrypt(identity);
+  
+  console.log(text); // "Hello, this is a quantum-safe secret."
+} catch (error) {
+  console.error("Decryption failed: Unauthorized or tampered message.");
 }
 
-createKey();
 ```
 
 ---
 
-### Example 2: Lock/Unlock Pattern
+## Technical Specifications Reference
+
+### 1. Cryptographic Stack (Envelope)
+Majik Envelope is designed to be **Post-Quantum Secure (PQS)** by default, moving away from classical ECC for key encapsulation.
+
+| Component | Primitive | Implementation / Standard |
+| :--- | :--- | :--- |
+| **Key Encapsulation (KEM)** | ML-KEM-768 | FIPS-203 (formerly Kyber) |
+| **Symmetric Encryption** | AES-256-GCM | NIST SP 800-38D |
+| **Hashing / Fingerprinting**| SHA-256 | FIPS 180-4 |
+| **Key Derivation (KDF)** | Argon2id | OWASP Recommended (v2 accounts) |
+| **Compression** | Zstd / Gzip | `@bokuweb/zstd-wasm` / `fflate` |
+
+
+### 2. Binary Structure & Framing
+The library produces a "Scanner-Ready" string. This is a Base64-encoded binary blob prefixed with a protocol identifier.
+
+**Format:** `~*$MJKMSG:<Base64_Payload>`
+
+#### Internal Binary Layout (Decoded Base64):
+| Offset (Bytes) | Length | Field | Description |
+| :--- | :--- | :--- | :--- |
+| `0` | 1 | **Version** | Set to `0x03` for current PQ format. |
+| `1` | 32 | **Fingerprint** | SHA-256 of the recipient (Single) or Sender (Group). |
+| `33` | Variable | **Payload** | UTF-8 JSON string containing IVs and ciphertexts. |
+
+
+### 3. Primitive Parameters
+| Parameter | Value | Description |
+| :--- | :--- | :--- |
+| `ML_KEM_PK_LEN` | 1184 bytes | ML-KEM-768 Public Key size. |
+| `ML_KEM_SK_LEN` | 2400 bytes | ML-KEM-768 Secret Key size. |
+| `ML_KEM_CT_LEN` | 1088 bytes | ML-KEM-768 Ciphertext (encapsulation). |
+| `AES_KEY_LEN` | 32 bytes | 256-bit symmetric key. |
+| `IV_LENGTH` | 12 bytes | Standard GCM Initialization Vector length. |
+
+
+### 4. Encryption Logic Flows
+
+#### A. Single-Recipient (Direct)
+1. **Compress**: Plaintext is compressed using Zstd (or Gzip fallback).
+2. **Encapsulate**: Generate a `sharedSecret` (32b) and `mlKemCipherText` (1088b) using the recipient's Public Key.
+3. **Encrypt**: Encrypt the compressed data via AES-256-GCM using the `sharedSecret` as the key.
+4. **Pack**: Encode the `iv`, `ciphertext`, and `mlKemCipherText` into a `SinglePayload` JSON object.
+
+#### B. Multi-Recipient (Group)
+1. **Compress**: Plaintext is compressed.
+2. **Key Generation**: Generate a random 32-byte `masterAesKey`.
+3. **Encrypt**: Encrypt the compressed data via AES-256-GCM using the `masterAesKey`.
+4. **Wrap Keys**: For **each** recipient:
+   - Perform ML-KEM encapsulation to get a unique `sharedSecret`.
+   - `encryptedAesKey = masterAesKey XOR sharedSecret`.
+   - Store the recipient's `fingerprint`, `mlKemCipherText`, and `encryptedAesKey`.
+5. **Pack**: Encode the `iv`, `ciphertext`, and the array of `keys` into a `GroupPayload` JSON object.
+
+
+### 5. Implementation Notes
+- **Authentication**: AES-GCM provides AEAD (Authenticated Encryption with Associated Data). If a message is tampered with or the wrong key is used, decryption will throw an "Auth tag mismatch" error.
+- **Quantum Resistance**: Because the symmetric key is derived via ML-KEM-768, the message remains secure even against future Shor's algorithm-based attacks that would break RSA or Elliptic Curve (X25519) systems.
+- **Graceful Degradation**: The `MajikCompressor` automatically handles decompression by identifying the `mjkcmp` magic header, ensuring compatibility even if compression settings change.
 
-```ts
-import { MajikKey } from '@majikah/majik-key';
-
-async function secureLockPattern() {
-  const json = localStorage.getItem('myKey');
-  const key = MajikKey.fromJSON(json);
-
-  // Key is locked by default when loaded from JSON
-  console.log('Locked:', key.isLocked); // true
-
-  try {
-    // This will throw an error
-    const privateKey = key.getPrivateKey();
-  } catch (error) {
-    console.log('❌ Cannot access private key when locked');
-  }
-
-  // Unlock to use private key
-  await key.unlock('secure-passphrase');
-  console.log('Unlocked:', key.isUnlocked); // true
-
-  // Now we can access private keys
-  const privateKey = key.getPrivateKey();
-  const privateKeyBase64 = key.getPrivateKeyBase64();
-
-  // Use the key for cryptographic operations
-  // ...
-
-  // Lock again when done
-  key.lock();
-  console.log('🔒 Key locked again');
-}
-
-secureLockPattern();
-```
-
----
-
-### Example 3: Backup and Recovery
-
-```ts
-import { MajikKey } from '@majikah/majik-key';
-
-async function backupAndRecover() {
-  const mnemonic = MajikKey.generateMnemonic();
-  const key = await MajikKey.create(mnemonic, 'password123', 'Original Key');
-
-  //Download as Blob JSON File
-
-  const jsonData = await key.toMnemonicJSON(mnemonic, 'password123');
-  const jsonString = JSON.stringify(jsonData);
-  const blob = new Blob([jsonString], {
-    type: "application/json;charset=utf-8",
-  });
-  downloadBlob(
-    blob,
-    "json",
-    `${label} | ${key.id} | SEED KEY`,
-  );
-
-
-
-  // Later... recover from backup
-
-  //Parse the downloaded JSON into this object
-  const jsonData: MnemonicJSON = {
-    id: "abc123",
-    seed: ["word1", "word2", ...],
-    phrase: 'password123',
-  };
-
-  const recoveredKey = await MajikKey.importFromMnemonicBackup(
-    jsonData.id,
-    seedArrayToString(jsonData.seed),
-    jsonData.phrase,
-    'Recovered Key'
-  );
-
-  console.log('✅ Key recovered!');
-  console.log('Same fingerprint:', key.fingerprint === recoveredKey.fingerprint);
-}
-
-backupAndRecover();
-```
-
-
----
-
-### Example 4: Update Passphrase
-
-```ts
-import { MajikKey } from '@majikah/majik-key';
-
-async function changePassphrase() {
-  const json = localStorage.getItem('myKey');
-  const key = MajikKey.fromJSON(json);
-
-  // Must unlock first
-  await key.unlock('old-password');
-
-  // Change passphrase
-  await key.updatePassphrase('old-password', 'new-secure-password');
-  console.log('✅ Passphrase updated!');
-
-  // Save updated key
-  localStorage.setItem('myKey', JSON.stringify(key.toJSON()));
-
-  // Verify new passphrase works
-  key.lock();
-  await key.unlock('new-secure-password');
-  console.log('✅ New passphrase verified!');
-}
-
-changePassphrase();
-```
-
----
-
-### Example 5: Verify Passphrase
-
-```ts
-import { MajikKey } from '@majikah/majik-key';
-
-async function verifyPassphrase() {
-  const json = localStorage.getItem('myKey');
-  const key = MajikKey.fromJSON(json);
-
-  // Verify without unlocking
-  const isValid = await key.verify('user-entered-password');
-
-  if (isValid) {
-    console.log('✅ Passphrase is correct');
-    await key.unlock('user-entered-password');
-    // Proceed with operations...
-  } else {
-    console.log('❌ Invalid passphrase');
-    // Show error to user
-  }
-}
-
-verifyPassphrase();
-```
-
----
-
-## Integration with Majik Message
-
-Majik Key is fully compatible with **Majik Message** as its seed phrase account implementation. Keys created with Majik Key can be directly imported into Majik Message.
-
-### Importing to Majik Message
-
-```ts
-import { MajikKey } from '@majikah/majik-key';
-
-async function importToMajikMessage() {
-  // Create or load a Majik Key
-  const mnemonic = MajikKey.generateMnemonic();
-  const key = await MajikKey.create(mnemonic, 'password', 'Message Account');
-
-  // Export to MnemonicJSON format for Majik Message
-  const mnemonicData = key.toMnemonicJSON(mnemonic, 'password');
-  const jsonString = JSON.stringify(mnemonicData);
-
-  // Download this blob as a JSON locally
-  const blob = new Blob([jsonString], {
-    type: "application/json;charset=utf-8",
-  });
-
-  // This mnemonicData can be imported directly into Majik Message
-  // as a seed phrase account
-  console.log('Import the saved JSON to Majik Message:', mnemonicData);
-}
-```
-
-### Converting to Majik Message Identity
-
-```ts
-import { MajikKey } from '@majikah/majik-key';
-import { MajikUser } from '@thezelijah/majik-user';
-
-async function createMessageIdentity() {
-  const mnemonic = MajikKey.generateMnemonic();
-  const key = await MajikKey.create(mnemonic, 'password', 'Message Identity');
-
-  // Create/parse a MajikUser instance
-  const user = new MajikUser({
-    username: 'myusername',
-    // ... other user properties
-  });
-
-  // Convert to Majik Message Identity
-  const identity = await key.toMajikMessageIdentity(user, {
-    label: 'My Message Account',
-    restricted: false
-  });
-
-  console.log('Majik Message Identity created:', identity);
-}
-```
-
----
-
-## Security Considerations
-
-### Best Practices
-
-1. **Never expose mnemonics**: Treat mnemonic phrases like passwords. Never log, transmit, or store them unencrypted.
-
-2. **Use strong passphrases**: Choose passphrases with high entropy (mix of letters, numbers, symbols).
-
-3. **Lock when not in use**: Always lock keys when private key access is not needed.
-
-4. **Secure storage**: Store JSON exports in secure locations (encrypted databases, secure storage APIs).
-
-5. **Backup mnemonics**: Store mnemonic phrases in multiple secure locations (password manager, paper backup, hardware wallet).
-
-### Security Features
-
-- **PBKDF2 Key Derivation**: 200,000 iterations with SHA-256
-- **AES-GCM Encryption**: Authenticated encryption with random IVs
-- **Per-Identity Salts**: Unique salt for each key prevents rainbow table attacks
-- **No Private Key Exposure**: Private keys never included in JSON exports
-- **Memory Management**: Private keys cleared from memory when locked
-
-### What NOT to Do
-
-❌ **DON'T** store mnemonics in code or version control  
-❌ **DON'T** transmit mnemonics over insecure channels  
-❌ **DON'T** use weak passphrases like "password123"  
-❌ **DON'T** share mnemonics or passphrases with anyone  
-❌ **DON'T** screenshot or photograph mnemonics  
-
-### What TO Do
-
-✅ **DO** use password managers for mnemonic storage  
-✅ **DO** write mnemonics on paper and store securely  
-✅ **DO** use hardware security modules when possible  
-✅ **DO** test recovery procedures before relying on them  
-✅ **DO** keep multiple encrypted backups in different locations  
-
----
-
-### Tips & Reminders
-
-#### For Developers
-
-- **Remember**: Always validate user input before creating or unlocking keys.
-
-- **Security**: Never log sensitive data (mnemonics, private keys, passphrases) in production.
-
-- **Performance**: Lock keys when not in use to free memory and reduce attack surface.
-
-- **Testing**: Test backup/recovery procedures in development before deploying to production.
-
-- **Dependencies**: Keep `@scure/bip39` and other crypto dependencies up to date.
-
-#### For Users
-
-- **Backup**: Always keep multiple backups of your mnemonic phrase in secure locations.
-
-- **Passphrase**: Use a strong, unique passphrase for each Majik Key.
-
-- **Recovery**: Test your ability to recover keys from backups before you need to.
-
-- **Organization**: Use meaningful labels to identify different keys.
-- **Loss Prevention**: Losing your mnemonic phrase means permanent loss of access to your key.
 
 ---
 
@@ -866,9 +210,11 @@ async function createMessageIdentity() {
 ### [Majik Message](https://message.majikah.solutions)
 Secure messaging platform using Majik Keys
 
+![npm](https://img.shields.io/npm/v/@majikah/majik-message) ![npm downloads](https://img.shields.io/npm/dm/@majikah/majik-message) ![npm bundle size](https://img.shields.io/bundlephobia/min/%40majikah%2Fmajik-message) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)
+
 [Read more about Majik Message here](https://majikah.solutions/products/majik-message)
 
-[![Majik Message Thumbnail](https://gydzizwxtftlmsdaiouw.supabase.co/storage/v1/object/public/bucket-majikah-public/main/Majikah_MajikMessage_SocialCard.webp)](https://message.majikah.solutions)
+[![Majik Message Thumbnail](https://github.com/user-attachments/assets/d433c6b8-1841-4fa1-a6da-b348029d1dbe)](https://message.majikah.solutions)
 
 > Click the image to try Majik Message live.
 
@@ -879,6 +225,17 @@ Also available on [Microsoft Store](https://apps.microsoft.com/detail/9pmjgvzzjs
 
 [Official Repository](https://github.com/Majikah/majik-message)
 [SDK Library](https://www.npmjs.com/package/@majikah/majik-message)
+
+---
+
+### [Majik Key](https://majikah.solutions/sdk/majik-key)
+**Majik Key** is a seed phrase account library for creating, managing, and parsing mnemonic-based cryptographic accounts (Majik Keys). Generate deterministic key pairs from BIP39 seed phrases with simple, developer-friendly APIs. Now supports ML-KEM-768 post-quantum key derivation alongside X25519.
+
+![npm](https://img.shields.io/npm/v/@majikah/majik-key) ![npm downloads](https://img.shields.io/npm/dm/@majikah/majik-key) ![npm bundle size](https://img.shields.io/bundlephobia/min/%40majikah%2Fmajik-key) [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)
+
+[Read Docs](https://majikah.solutions/sdk/majik-key/docs)
+[Official Repository](https://github.com/Majikah/majik-key)
+[SDK Library](https://www.npmjs.com/package/@majikah/majik-key)
 
 ---
 
