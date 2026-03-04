@@ -12,7 +12,7 @@ import {
   base64ToArrayBuffer,
 } from "./core/utils";
 import { MajikCompressor } from "./core/compressor/majik-compressor";
-import {
+import type {
   EnvelopePayload,
   GroupKey,
   GroupPayload,
