@@ -1,3 +1,4 @@
+// crypto-provider.ts from @majikah/majik-envelope
 import * as ed25519 from "@stablelib/ed25519";
 import ed2curve from "ed2curve";
 import { AES } from "@stablelib/aes";
