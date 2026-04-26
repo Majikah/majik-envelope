@@ -10,6 +10,7 @@ import {
   arrayBufferToBase64,
   arrayToBase64,
   base64ToArrayBuffer,
+  base64ToUint8Array,
 } from "./core/utils";
 import { MajikCompressor } from "./core/compressor/majik-compressor";
 import type {
@@ -20,6 +21,7 @@ import type {
   SinglePayload,
 } from "./core/types";
 import { MajikEnvelopeError } from "./core/error";
+import { MajikContact } from "@majikah/majik-contact";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -318,6 +320,64 @@ export class MajikEnvelope {
       if (err instanceof MajikEnvelopeError) throw err;
       throw new MajikEnvelopeError("Decryption failed", err);
     }
+  }
+
+  static async buildMajikRecipientFromContact(
+    contact: MajikContact,
+  ): Promise<MajikRecipient> {
+    if (!contact)
+      throw new Error(`A contact is required to build a MajikRecipient`);
+
+    const mlPubKey = base64ToUint8Array(contact.mlKey);
+
+    if (!mlPubKey) {
+      throw new MajikEnvelopeError(
+        `Recipient key "${contact.fingerprint}" has no ML-KEM public key. `,
+      );
+    }
+    return {
+      fingerprint: contact.fingerprint,
+      mlKemPublicKey: mlPubKey,
+    };
+  }
+
+  static async buildMajikRecipientsFromContacts(
+    contacts: MajikContact[],
+  ): Promise<MajikRecipient[]> {
+    if (!contacts || contacts.length === 0) return [];
+
+    const recipients: MajikRecipient[] = [];
+    const seen = new Set<string>();
+    const invalidContacts: string[] = [];
+
+    for (const contact of contacts) {
+      if (!contact) continue;
+
+      // dedupe by fingerprint
+      if (seen.has(contact.fingerprint)) continue;
+
+      const mlPubKey = base64ToUint8Array(contact.mlKey);
+
+      if (!mlPubKey) {
+        invalidContacts.push(contact.fingerprint);
+        continue;
+      }
+
+      recipients.push({
+        fingerprint: contact.fingerprint,
+        mlKemPublicKey: mlPubKey,
+      });
+
+      seen.add(contact.fingerprint);
+    }
+
+    if (invalidContacts.length > 0) {
+      throw new MajikEnvelopeError(
+        `Invalid ML-KEM public key for contact(s): ${invalidContacts.join(", ")}`,
+      );
+    }
+
+    return recipients;
   }
 
   // ── SERIALIZATION ─────────────────────────────────────────────────────────
