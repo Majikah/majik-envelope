@@ -214,7 +214,7 @@ Secure messaging platform using Majik Keys
 
 [Read more about Majik Message here](https://majikah.solutions/products/majik-message)
 
-[![Majik Message Thumbnail](https://github.com/user-attachments/assets/d433c6b8-1841-4fa1-a6da-b348029d1dbe)](https://message.majikah.solutions)
+[![Majik Message Thumbnail](https://github.com/user-attachments/assets/6355cbd3-63e4-4a95-a370-64ba27cbb4a7)](https://message.majikah.solutions)
 
 > Click the image to try Majik Message live.
 
