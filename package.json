@@ -2,7 +2,7 @@
   "name": "@majikah/majik-envelope",
   "type": "module",
   "description": "The post-quantum cryptographic engine for Majik Message. Implements Envelope Format using ML-KEM-768 (Kyber) and AES-256-GCM with multi-recipient support and transparent compression.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "Apache-2.0",
   "author": "Zelijah",
   "main": "./dist/index.js",
@@ -42,17 +42,20 @@
     "url": "https://github.com/Majikah/majik-envelope/issues"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build",
+    "package": "npm run build && npm version patch && git push && git push --tags",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@bokuweb/zstd-wasm": "^0.0.27",
     "@majikah/majik-contact": "^0.0.4",
-    "@noble/post-quantum": "^0.5.4",
-    "@scure/bip39": "^1.6.0",
+    "@noble/hashes": "^2.2.0",
+    "@noble/post-quantum": "^0.6.1",
     "@stablelib/aes": "^2.0.1",
-    "@stablelib/ed25519": "^2.0.2",
+    "@stablelib/ed25519": "^2.1.0",
     "@stablelib/gcm": "^2.0.1",
     "@stablelib/pbkdf2": "^2.0.1",
     "@stablelib/sha256": "^2.0.1",
@@ -61,6 +64,9 @@
     "fflate": "^0.8.2"
   },
   "devDependencies": {
-    "@types/ed2curve": "^0.2.4"
+    "@types/ed2curve": "^0.2.4",
+    "@types/node": "^26.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }

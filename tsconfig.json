@@ -10,7 +10,8 @@
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["vitest/globals"]
   },
   "include": ["src/**/*", "src"],
   "exclude": ["demo", "node_modules", "dist"]

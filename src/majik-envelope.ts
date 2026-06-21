@@ -31,7 +31,6 @@ const VERSION = 3;
 const FINGERPRINT_LEN = 32; // SHA-256 = 32 bytes
 const ML_KEM_PK_LEN = 1184; // ML-KEM-768 public key
 const ML_KEM_SK_LEN = 2400; // ML-KEM-768 secret key
-const ML_KEM_CT_LEN = 1088; // ML-KEM-768 ciphertext
 const AES_KEY_LEN = 32;
 
 // ─── Public Interfaces ────────────────────────────────────────────────────────
@@ -330,7 +329,8 @@ export class MajikEnvelope {
 
     const mlPubKey = base64ToUint8Array(contact.mlKey);
 
-    if (!mlPubKey) {
+    if (!mlPubKey || mlPubKey.length === 0) {
+      // <-- ADD length check here
       throw new MajikEnvelopeError(
         `Recipient key "${contact.fingerprint}" has no ML-KEM public key. `,
       );
