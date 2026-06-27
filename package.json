@@ -51,7 +51,7 @@
   },
   "dependencies": {
     "@bokuweb/zstd-wasm": "^0.0.27",
-    "@majikah/majik-contact": "^0.0.4",
+    "@majikah/majik-contact": "^0.0.6",
     "@noble/hashes": "^2.2.0",
     "@noble/post-quantum": "^0.6.1",
     "@stablelib/aes": "^2.0.1",
@@ -61,7 +61,7 @@
     "@stablelib/sha256": "^2.0.1",
     "@stablelib/x25519": "^2.0.1",
     "ed2curve": "^0.3.0",
-    "fflate": "^0.8.2"
+    "fflate": "^0.8.3"
   },
   "devDependencies": {
     "@types/ed2curve": "^0.2.4",

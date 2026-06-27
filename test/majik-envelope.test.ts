@@ -6,6 +6,8 @@
 // ensuring the underlying 32-byte shared secrets properly flow into the AES
 // symmetric ciphers.
 
+import { Buffer } from "node:buffer";
+
 import { describe, it, expect, vi, beforeAll } from "vitest";
 import { MajikEnvelope } from "../src/majik-envelope";
 import { generateMlKemKeypair } from "../src/core/crypto/crypto-provider";
