@@ -2,7 +2,7 @@
   "name": "@majikah/majik-envelope",
   "type": "module",
   "description": "The post-quantum cryptographic engine for Majik Message. Implements Envelope Format using ML-KEM-768 (Kyber) and AES-256-GCM with multi-recipient support and transparent compression.",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "license": "Apache-2.0",
   "author": "Zelijah",
   "main": "./dist/index.js",
