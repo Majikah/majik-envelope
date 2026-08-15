@@ -3,9 +3,10 @@
  * ================================ */
 
 import { KEY_ALGO } from "./crypto/constants";
+import { X25519RawKey } from "./types";
 
 export async function keyToBase64(
-  key: CryptoKey | { raw: Uint8Array },
+  key: CryptoKey | X25519RawKey,
 ): Promise<string> {
   const anyKey: any = key as any;
   if (anyKey && anyKey.raw instanceof Uint8Array) {
@@ -17,7 +18,7 @@ export async function keyToBase64(
 
 export async function base64ToKey(
   base64: string,
-): Promise<CryptoKey | { raw: Uint8Array }> {
+): Promise<CryptoKey | X25519RawKey> {
   const raw = base64ToArrayBuffer(base64);
   try {
     return await crypto.subtle.importKey("raw", raw, KEY_ALGO, true, []);
@@ -25,7 +26,7 @@ export async function base64ToKey(
     // WebCrypto may not support X25519; return a raw-key wrapper as fallback
     const ua = new Uint8Array(raw);
     const wrapper: any = { type: "public", raw: ua };
-    return wrapper as unknown as CryptoKey | { raw: Uint8Array };
+    return wrapper as unknown as CryptoKey | X25519RawKey;
   }
 }
 

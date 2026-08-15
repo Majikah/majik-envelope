@@ -18,6 +18,7 @@ import type {
   GroupKey,
   GroupPayload,
   MajikEnvelopeJSON,
+  MajikKeyFingerprint,
   SinglePayload,
 } from "./core/types";
 import { MajikEnvelopeError } from "./core/error";
@@ -102,7 +103,7 @@ export class MajikEnvelope {
 
   // ── Getters ───────────────────────────────────────────────────────────────
 
-  get fingerprint(): string {
+  get fingerprint(): MajikKeyFingerprint {
     return this._fingerprint;
   }
   get plaintext(): string | undefined {

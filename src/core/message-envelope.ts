@@ -12,7 +12,7 @@
  */
 
 import { MessageEnvelopeError } from "./error";
-import type { EnvelopePayload, SinglePayload, GroupKey } from "./types";
+import type { EnvelopePayload, SinglePayload, GroupKey, MajikKeyFingerprint } from "./types";
 import { base64ToArrayBuffer, arrayBufferToBase64 } from "./utils";
 
 /* -------------------------------
@@ -246,7 +246,7 @@ export class MessageEnvelope {
   /**
    * Checks if this envelope contains a key for the given fingerprint.
    */
-  hasRecipient(fingerprint: string): boolean {
+  hasRecipient(fingerprint: MajikKeyFingerprint): boolean {
     return !!this.getRecipientKey(fingerprint);
   }
 
