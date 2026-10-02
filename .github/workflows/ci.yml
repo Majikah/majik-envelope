@@ -1,45 +1,82 @@
-name: CI
+name: Publish to npm
 
 on:
   push:
-    branches:
-      - main
-      - master
+    tags:
+      - "v*"
 
-  pull_request:
-    branches:
-      - main
-      - master
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  ci:
+    name: CI
+    uses: ./.github/workflows/ci.yml
 
-    strategy:
-      matrix:
-        node-version: [20, 22]
+  publish:
+    name: Publish to npm
+    needs: ci
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Type Check
-        run: npm run typecheck --if-present
+      - name: Publish
+        run: npm publish
 
-      - name: Lint
-        run: npm run lint --if-present
+  slack:
+    name: Slack Notification
+    needs:
+      - ci
+      - publish
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
 
-      - name: Test
-        run: npm test --if-present
+    steps:
+      - name: Notify Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 
-      - name: Build
-        run: npm run build
+          SLACK_TITLE: >-
+            ${{ needs.ci.result != 'success'
+              && '❌ CI Failed'
+              || needs.publish.result != 'success'
+              && '❌ npm Publish Failed'
+              || '🚀 npm Publish Successful' }}
+            — ${{ github.repository }}
+
+          SLACK_COLOR: >-
+            ${{ needs.ci.result != 'success'
+              && 'danger'
+              || needs.publish.result != 'success'
+              && 'danger'
+              || 'good' }}
+
+          SLACK_MESSAGE: |
+            📦 Repository: ${{ github.repository }}
+            🏷️ Version: ${{ github.ref_name }}
+            🔀 Commit: ${{ github.sha }}
+
+            CI:
+            ${{ needs.ci.result == 'success' && '✅ Passed' || '❌ Failed' }}
+
+            npm Publish:
+            ${{ needs.publish.result == 'success'
+              && '✅ Published successfully'
+              || needs.publish.result == 'skipped'
+              && '⏭️ Not run because CI failed'
+              || '❌ Failed' }}
+
+            🔗 https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
